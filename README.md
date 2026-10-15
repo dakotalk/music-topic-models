@@ -120,13 +120,54 @@ classifier does no better than the majority baseline).
 
 ## Results on Chordonomicon (40,000 songs)
 
-See [`results/chordonomicon/`](results/chordonomicon/) — `topics.md` with genre
-and mode lift per topic, `downstream.txt`, `topic_share_by_decade.png` and
-`genre_topic_lift.png`. Chordonomicon has no durations or metre, so each chord
-is one unit token; keys are estimated with Krumhansl–Schmuckler profiles
-before transposition, which is noisier than Billboard's annotated tonics.
+Chordonomicon has no durations or metre, so each chord is one unit token and
+the vocabulary is just 49 relative chords; keys are estimated with
+Krumhansl–Schmuckler profiles before transposition, which is noisier than
+Billboard's annotated tonics. 32,000 training songs, 8,000 held out, K = 8
+chosen by the same reproducibility rule (0.75 of topics reproduce; held-out
+NPMI 0.21, positive now that there are enough songs for pairs to co-occur).
 
-<!-- CHORDONOMICON_SUMMARY -->
+| Topic | Share | Top chords | Reading | Over-used by |
+|---|---|---|---|---|
+| 3 | 0.43 | IV (.34) I (.34) V (.32) | plain diatonic major | country ×1.3, punk ×1.1 |
+| 0 | 0.24 | i (.25) ♭VI (.22) ♭III (.15) iv (.14) ♭VII (.13) | flat-side / Aeolian | rap ×1.8, metal ×1.8, reggae ×1.3; minor-key songs ×3.3 |
+| 7 | 0.15 | I (.42) ii (.21) IV (.19) ♭VII (.12) v (.05) | Mixolydian / Dorian major | reggae ×1.2, rock ×1.1 |
+| 1 | 0.08 | vi (.82) iii (.18) | relative-minor vamps (partly a key-estimation artefact) | pop ×1.2, alternative ×1.1 |
+| 2 | 0.05 | V7 (.34) I7 (.17) IVmaj7… IV7 (.08) II7 (.07) | dominant sevenths / blues | jazz ×3.3, soul ×2.3 |
+| 5 | 0.02 | II (.46) VI (.24) III (.21) | major chords on sharp-side degrees | punk ×2.1, metal ×1.8 |
+| 6 | 0.02 | ii7 (.40) vi7 (.39) v7 (.12) | minor sevenths | soul ×3.8, jazz ×2.4 |
+| 4 | 0.01 | IVmaj7, Imaj7 … | major sevenths | soul ×4.2, jazz ×1.7 |
+
+The same four systems come out as on Billboard — diatonic major, flat-side
+minor, blues sevenths, seventh-chord soul/jazz — and the same two trends hold
+over a longer span (828–16,215 songs per decade):
+
+![topic share by decade](results/chordonomicon/topic_share_by_decade.png)
+
+| Topic | 1960s | 1970s | 1980s | 1990s | 2000s | 2010s | 2020s |
+|---|---|---|---|---|---|---|---|
+| 3 diatonic major | 0.46 | 0.43 | 0.40 | 0.44 | 0.43 | 0.43 | 0.42 |
+| 0 flat-side minor | **0.14** | 0.18 | 0.23 | 0.21 | 0.24 | 0.26 | **0.24** |
+| 2 blues sevenths | **0.14** | 0.09 | 0.07 | 0.07 | 0.05 | 0.04 | **0.04** |
+| 1 vi / iii vamps | 0.04 | 0.05 | 0.06 | 0.06 | 0.08 | 0.10 | 0.10 |
+
+![genre lift](results/chordonomicon/genre_topic_lift.png)
+
+Downstream, chord shares without rhythm carry almost no signal (mean ± sd over
+3 seeds):
+
+| Task | Score | Baseline |
+|---|---|---|
+| Section type (verse / chorus / bridge), 20,000 sections, GroupKFold by song | accuracy 0.40 ± 0.00 | majority 0.47 |
+| Verse vs chorus | 0.52 ± 0.00 | majority 0.51 |
+| Release year, 40,000 songs | MAE 10.3 ± 0.1 years | predict the mean 10.5 |
+| Main genre, 8 classes | accuracy 0.19, balanced 0.21 | majority 0.26, chance 0.125 |
+
+(The classifiers use `class_weight="balanced"`, which is why accuracy can sit
+below the majority baseline while balanced accuracy sits above chance.) The
+genre lifts above are real but small per-song effects; the 2015 project's
+section classifier was living on Billboard's rhythmic bargrams, not on which
+chords were used.
 
 ## Running it
 

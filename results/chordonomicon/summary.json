@@ -1,0 +1,249 @@
+{
+  "config": {
+    "csv": "/home/user/data/chordonomicon/chordonomicon_v2.csv",
+    "out": "results/chordonomicon",
+    "n": 40000,
+    "ks": "8,12,16,24,32",
+    "seeds": "0,1,2",
+    "k": null,
+    "passes": 10,
+    "max_sections": 20000,
+    "collocations": 1,
+    "min_doc_frac": 0.005,
+    "tokenizer": {
+      "with_rhythm": false,
+      "with_bass": false,
+      "collapse_repeats": true,
+      "repeat_counts": false,
+      "max_repeat": 4,
+      "collocation_rounds": 1,
+      "collocation_threshold": 0.1,
+      "collocation_min_count": 160,
+      "min_doc_freq": 160,
+      "min_term_freq": 480,
+      "drop_no_chord": true
+    }
+  },
+  "songs": 40000,
+  "train_docs": 31999,
+  "train_dropped_empty": 1,
+  "heldout_docs": 8000,
+  "vocab": 49,
+  "top_tokens": [
+    [
+      "C:maj",
+      493394
+    ],
+    [
+      "F:maj",
+      411175
+    ],
+    [
+      "G:maj",
+      319361
+    ],
+    [
+      "A:min",
+      172060
+    ],
+    [
+      "C:min",
+      145863
+    ],
+    [
+      "Ab:maj",
+      129576
+    ],
+    [
+      "Bb:maj",
+      119607
+    ],
+    [
+      "Eb:maj",
+      87965
+    ],
+    [
+      "F:min",
+      80849
+    ],
+    [
+      "D:min",
+      74067
+    ],
+    [
+      "E:min",
+      37435
+    ],
+    [
+      "G:min",
+      35843
+    ],
+    [
+      "G:dom7",
+      34313
+    ],
+    [
+      "D:maj",
+      25806
+    ],
+    [
+      "C:dom7",
+      18869
+    ],
+    [
+      "A:min7",
+      17909
+    ],
+    [
+      "D:min7",
+      17515
+    ],
+    [
+      "Db:maj",
+      14032
+    ],
+    [
+      "F:maj7",
+      12059
+    ],
+    [
+      "E:maj",
+      11663
+    ],
+    [
+      "A:maj",
+      11494
+    ],
+    [
+      "F:dom7",
+      9548
+    ],
+    [
+      "Ab:maj7",
+      8502
+    ],
+    [
+      "D:dom7",
+      8358
+    ],
+    [
+      "C:maj7",
+      8165
+    ],
+    [
+      "C:min7",
+      7807
+    ],
+    [
+      "F:min7",
+      7300
+    ],
+    [
+      "G:min7",
+      5800
+    ],
+    [
+      "Bb:min",
+      5343
+    ],
+    [
+      "E:min7",
+      5218
+    ]
+  ],
+  "modes": {
+    "major": 29070,
+    "minor": 10930
+  },
+  "genres": [
+    [
+      "",
+      11350
+    ],
+    [
+      "pop",
+      6921
+    ],
+    [
+      "rock",
+      5555
+    ],
+    [
+      "country",
+      4293
+    ],
+    [
+      "alternative",
+      3993
+    ],
+    [
+      "pop rock",
+      3145
+    ],
+    [
+      "punk",
+      1368
+    ],
+    [
+      "metal",
+      901
+    ],
+    [
+      "rap",
+      899
+    ],
+    [
+      "soul",
+      564
+    ],
+    [
+      "jazz",
+      485
+    ],
+    [
+      "reggae",
+      332
+    ],
+    [
+      "electronic",
+      194
+    ]
+  ],
+  "chosen_k": 8,
+  "chosen_seed": 0,
+  "heldout_npmi": 0.21632002518264373,
+  "downstream_mean_over_seeds": {
+    "npmi": 0.214,
+    "section3_acc": 0.4016,
+    "section3_majority": 0.4661,
+    "verse_chorus_acc": 0.5162,
+    "verse_chorus_majority": 0.5136,
+    "year_mae": 10.2554,
+    "year_baseline_mae": 10.5422,
+    "genre_acc": 0.194,
+    "genre_bal_acc": 0.2086,
+    "genre_majority": 0.2556
+  },
+  "downstream_sd_over_seeds": {
+    "npmi": 0.002,
+    "section3_acc": 0.0036,
+    "section3_majority": 0.0,
+    "verse_chorus_acc": 0.002,
+    "verse_chorus_majority": 0.0,
+    "year_mae": 0.0534,
+    "year_baseline_mae": 0.0,
+    "genre_acc": 0.0046,
+    "genre_bal_acc": 0.0058,
+    "genre_majority": 0.0
+  },
+  "genre_classes": [
+    "pop",
+    "rock",
+    "country",
+    "alternative",
+    "pop rock",
+    "punk",
+    "metal",
+    "rap"
+  ]
+}
