@@ -1,0 +1,183 @@
+{
+  "config": {
+    "data": "/home/user/data/billboard/McGill-Billboard",
+    "index": "/home/user/data/billboard/billboard-2.0-index.csv",
+    "out": "results/billboard",
+    "ks": "6,8,10,12,16,20,24,32",
+    "seeds": "0,1,2,3,4",
+    "k": null,
+    "quality": "coarse",
+    "no_collapse": false,
+    "repeat_counts": false,
+    "doc_unit": "song",
+    "collocations": 0,
+    "min_doc_freq": 10,
+    "passes": 30,
+    "tokenizer": {
+      "with_rhythm": true,
+      "with_bass": false,
+      "collapse_repeats": true,
+      "repeat_counts": false,
+      "max_repeat": 4,
+      "collocation_rounds": 0,
+      "collocation_threshold": 0.1,
+      "collocation_min_count": 5,
+      "min_doc_freq": 10,
+      "min_term_freq": 30,
+      "drop_no_chord": true
+    }
+  },
+  "songs": 890,
+  "bars": 91345,
+  "songs_with_key_change": 82,
+  "train_docs": 708,
+  "train_dropped_empty": 4,
+  "heldout_docs": 178,
+  "vocab": 74,
+  "tokens_train": 40154,
+  "top_tokens": [
+    [
+      "0,4,C:maj",
+      8314
+    ],
+    [
+      "0,4,F:maj",
+      4752
+    ],
+    [
+      "0,4,G:maj",
+      3229
+    ],
+    [
+      "0,4,G:dom7",
+      1721
+    ],
+    [
+      "0,4,Bb:maj",
+      1513
+    ],
+    [
+      "0,4,C:min",
+      1440
+    ],
+    [
+      "0,4,A:min",
+      1414
+    ],
+    [
+      "0,4,C:dom7",
+      945
+    ],
+    [
+      "0,2,F:maj---2,2,G:maj",
+      910
+    ],
+    [
+      "0,4,Ab:maj",
+      824
+    ],
+    [
+      "0,4,D:min7",
+      796
+    ],
+    [
+      "0,4,C:min7",
+      764
+    ],
+    [
+      "0,4,F:dom7",
+      705
+    ],
+    [
+      "0,2,C:maj---2,2,F:maj",
+      634
+    ],
+    [
+      "0,4,Eb:maj",
+      615
+    ],
+    [
+      "0,4,D:min",
+      604
+    ],
+    [
+      "0,2,C:maj---2,2,G:maj",
+      591
+    ],
+    [
+      "0,2,F:maj---2,2,C:maj",
+      591
+    ],
+    [
+      "0,4,F:min",
+      523
+    ],
+    [
+      "0,4,C:maj7",
+      482
+    ],
+    [
+      "0,4,F:maj7",
+      478
+    ],
+    [
+      "0,4,D:maj",
+      459
+    ],
+    [
+      "0,4,A:min7",
+      445
+    ],
+    [
+      "0,4,F:min7",
+      375
+    ],
+    [
+      "0,4,E:min7",
+      365
+    ],
+    [
+      "0,4,E:min",
+      340
+    ],
+    [
+      "0,4,D:dom7",
+      327
+    ],
+    [
+      "0,2,Ab:maj---2,2,Bb:maj",
+      320
+    ],
+    [
+      "0,2,D:min7---2,2,G:dom7",
+      281
+    ],
+    [
+      "0,4,G:min7",
+      273
+    ]
+  ],
+  "chosen_k": 6,
+  "chosen_seed": 0,
+  "downstream_mean_over_seeds": {
+    "npmi": -0.1664,
+    "section4_acc": 0.4741,
+    "section4_bal_acc": 0.4674,
+    "section4_majority": 0.4333,
+    "verse_chorus_acc": 0.6101,
+    "verse_chorus_majority": 0.4931,
+    "year_mae": 6.1029,
+    "year_baseline_mae": 7.5883
+  },
+  "downstream_sd_over_seeds": {
+    "npmi": 0.0396,
+    "section4_acc": 0.0256,
+    "section4_bal_acc": 0.0106,
+    "section4_majority": 0.0,
+    "verse_chorus_acc": 0.0145,
+    "verse_chorus_majority": 0.0,
+    "year_mae": 0.0949,
+    "year_baseline_mae": 0.0
+  },
+  "heldout_npmi_best": -0.10317388808101552
+}

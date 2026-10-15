@@ -1,0 +1,44 @@
+5746 labelled sections, 5551 non-empty after thresholding (195 dropped)
+Features: topic proportions of the section. CV: GroupKFold by song.
+
+== Across 5 seeds at K=6 (mean ± sd over LDA seeds) ==
+4-class accuracy      0.474 ± 0.026   majority 0.433 ± 0.000
+4-class balanced acc  0.467 ± 0.011
+verse-vs-chorus acc   0.610 ± 0.015   majority 0.493 ± 0.000
+
+== Random forest, 4 classes (seed 0) ==
+n=5551  classes=['verse', 'chorus', 'bridge', 'prechorus']
+accuracy          0.495 ± 0.014
+balanced accuracy 0.479
+majority baseline 0.433
+stratified-random baseline 0.379
+confusion (rows=true, cols=pred):
+           verse chorus bridge precho
+    verse   1292    661    271    181
+   chorus    717   1104    296    252
+   bridge     98     93    186     53
+prechorus     51     76     53    167
+
+== Logistic regression, 4 classes (seed 0) ==
+n=5551  classes=['verse', 'chorus', 'bridge', 'prechorus']
+accuracy          0.274 ± 0.022
+balanced accuracy 0.317
+majority baseline 0.433
+stratified-random baseline 0.379
+confusion (rows=true, cols=pred):
+           verse chorus bridge precho
+    verse   1137     95    346    827
+   chorus    977    107    385    900
+   bridge    173     13     79    165
+prechorus    101      9     41    196
+
+== Random forest, verse vs chorus (seed 0) ==
+n=4774  classes=['verse', 'chorus']
+accuracy          0.620 ± 0.029
+balanced accuracy 0.620
+majority baseline 0.493
+stratified-random baseline 0.494
+confusion (rows=true, cols=pred):
+        verse chorus
+ verse   1495    910
+chorus    903   1466
