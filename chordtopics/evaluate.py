@@ -67,7 +67,7 @@ def section_classification(X: np.ndarray, y: list[str], groups: list,
     maj, strat = [], []
     for tr, te in gkf.split(X, y, groups):
         if model == "rf":
-            clf = RandomForestClassifier(n_estimators=300, random_state=seed,
+            clf = RandomForestClassifier(n_estimators=300, random_state=seed, n_jobs=-1,
                                          class_weight="balanced", min_samples_leaf=3)
         else:
             clf = make_pipeline(StandardScaler(),
@@ -102,7 +102,7 @@ def year_regression(X: np.ndarray, years: list[float], seed: int = 0,
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=seed)
     maes, base = [], []
     for tr, te in kf.split(X):
-        reg = (RandomForestRegressor(n_estimators=300, random_state=seed, min_samples_leaf=3)
+        reg = (RandomForestRegressor(n_estimators=300, random_state=seed, min_samples_leaf=3, n_jobs=-1)
                if model == "rf" else Ridge(alpha=1.0))
         reg.fit(X[tr], y[tr])
         maes.append(mean_absolute_error(y[te], reg.predict(X[te])))

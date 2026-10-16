@@ -92,7 +92,8 @@ def main():
                      "npmi_std": np.std([t.coherence for t in ts]),
                      "heldout_log_perplexity": np.mean([t.log_perplexity for t in ts]),
                      "stability_cosine": st["mean_matched_cosine"],
-                     "frac_topics_stable": st["frac_topics_stable"]})
+                     "frac_topics_stable": st["frac_topics_stable"],
+                     "frac_topics_real": st["frac_topics_real"]})
     sweep_df = pd.DataFrame(rows)
     sweep_df.to_csv(out / "k_sweep.csv", index=False)
     log.info("\n%s", sweep_df.to_string(index=False))
@@ -109,9 +110,9 @@ def main():
     # Choose K by reproducibility: the fraction of topics that re-appear (cosine
     # >= 0.7) in every other seed. NPMI and held-out likelihood both keep
     # improving as K grows and topics degenerate to 2-3 tokens each, so they
-    # cannot pick K on their own; NPMI breaks ties.
-    chosen_k = args.k or int(sweep_df.sort_values(["frac_topics_stable", "npmi_mean"],
-                                                  ascending=False).iloc[0].k)
+    # cannot pick K on their own; ties go to the smaller model.
+    chosen_k = args.k or int(sweep_df.sort_values(["frac_topics_stable", "k"],
+                                                  ascending=[False, True]).iloc[0].k)
     best = max(runs[chosen_k], key=lambda t: t.coherence)
     lda = best.lda
     stats.update(chosen_k=chosen_k, chosen_seed=best.seed, heldout_npmi=best.coherence)

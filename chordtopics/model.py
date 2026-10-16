@@ -30,6 +30,7 @@ class Topics:
     coherence: float            # held-out mean NPMI
     per_topic_coherence: list[float]
     log_perplexity: float       # held-out
+    share: np.ndarray | None = None   # mean topic proportion over (a sample of) training docs
 
 
 def top_words(lda: LdaModel, topic: int, n: int = 10) -> list[str]:
@@ -84,7 +85,14 @@ def train(train_docs: list[list[str]], heldout_docs: list[list[str]],
     held_bow = [dictionary.doc2bow(d) for d in heldout_docs]
     held_bow = [b for b in held_bow if b]
     lp = lda.log_perplexity(held_bow) if held_bow else float("nan")
-    return Topics(k, seed, lda, dictionary, float(np.nanmean(per_topic)), per_topic, lp)
+    # corpus share of each topic, from a fixed sample of training documents
+    sample = bow if len(bow) <= 2000 else [bow[i] for i in np.random.default_rng(0).choice(len(bow), 2000, replace=False)]
+    share = np.zeros(k)
+    for b in sample:
+        for t, p in lda.get_document_topics(b, minimum_probability=0.0):
+            share[t] += p
+    share /= max(len(sample), 1)
+    return Topics(k, seed, lda, dictionary, float(np.nanmean(per_topic)), per_topic, lp, share)
 
 
 def topic_word_matrix(t: Topics) -> np.ndarray:
@@ -102,18 +110,34 @@ def match_topics(a: Topics, b: Topics) -> tuple[np.ndarray, float]:
     return sim[r, c], float(sim[r, c].mean())
 
 
-def stability(runs: list[Topics]) -> dict:
+def stability(runs: list[Topics], min_share_factor: float = 0.25, min_effective_vocab: float = 3.0) -> dict:
     """Mean matched cosine similarity over all pairs of seeds, and the
-    fraction of topics that find a match >= 0.7 in every other run."""
-    pair_means, per_topic_min = [], np.ones(runs[0].k)
+    fraction of topics that (a) carry at least `min_share_factor`/K of the
+    corpus in the reference run, (b) spread over at least `min_effective_vocab`
+    tokens and (c) find a match >= 0.7 in every other run. Near-empty and
+    one-chord topics are excluded because they match each other trivially and
+    would otherwise reward degenerate large-K models."""
+    k = runs[0].k
+    pair_means, per_topic_min = [], np.ones(k)
     for i, j in combinations(range(len(runs)), 2):
         sims, m = match_topics(runs[i], runs[j])
         pair_means.append(m)
         if i == 0:
             per_topic_min = np.minimum(per_topic_min, sims)
+    real = runs[0].share >= min_share_factor / k if runs[0].share is not None else np.ones(k, bool)
+    # a topic that is effectively one or two chords is not a "style": require
+    # an effective vocabulary (exp entropy of the word distribution) >= 3
+    real &= effective_vocabulary(runs[0]) >= min_effective_vocab
     return {"mean_matched_cosine": float(np.mean(pair_means)) if pair_means else float("nan"),
-            "frac_topics_stable": float(np.mean(per_topic_min >= 0.7)),
+            "frac_topics_stable": float(np.mean((per_topic_min >= 0.7) & real)),
+            "frac_topics_real": float(real.mean()),
             "per_topic_min_sim": per_topic_min.tolist()}
+
+
+def effective_vocabulary(t: Topics) -> np.ndarray:
+    """exp(entropy) of each topic's word distribution: how many tokens it is 'about'."""
+    W = topic_word_matrix(t)
+    return np.exp(-(W * np.log(W + 1e-12)).sum(axis=1))
 
 
 def sweep(train_docs, heldout_docs, ks: list[int], seeds: list[int],
