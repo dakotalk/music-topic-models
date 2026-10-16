@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+/data/
+# trained models are reproducible from the scripts; keep the repo light
+results/**/*.model*
+results/**/*.dict
+results/**/*.npy
