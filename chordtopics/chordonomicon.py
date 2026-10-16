@@ -3,8 +3,10 @@
 Rows look like
     <intro_1> C <verse_1> F C E7 Amin C ... <chorus_1> F C F C G C ...
 with no durations, metre or key. Each chord symbol therefore becomes one
-"bar" token with unit duration, and the key is estimated from the chord
-tones with a Krumhansl-Schmuckler profile so roots can be made relative.
+"bar" token with unit duration. Keys are estimated per section with the
+chord-root profile learned from the Billboard tonic annotations
+(chordtopics/keyfinding.py; validated by scripts/validate_learned_keyfinding.py)
+so roots can be made relative, and a section that modulates gets its own key.
 """
 from __future__ import annotations
 
@@ -15,11 +17,18 @@ from pathlib import Path
 
 import numpy as np
 
-from .chords import Chord, pitch_class, relative_root, RELATIVE_NAMES
+from . import keyfinding
+from .chords import Chord, pitch_class, RELATIVE_NAMES
 
-# Krumhansl & Kessler (1982) key profiles
-_MAJOR = np.array([6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88])
-_MINOR = np.array([6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17])
+_DATA = Path(__file__).parent / "data"
+_PROFILE = np.load(_DATA / "billboard_key_profile.npy")          # 2 x 12 x 2: mode, relative root, chord type
+_MODE_LOG_PRIOR = np.log(np.load(_DATA / "billboard_mode_prior.npy"))
+# Cross-validated on Billboard (scripts/validate_learned_keyfinding.py): 80% song
+# tonic accuracy, 84% section tonic accuracy, 72% on sections of songs that
+# change key, 95% of real key changes detected, spurious change in 22% of
+# other songs. Krumhansl profiles on the same songs: 75% / 78% / 46%.
+KEY_CFG = keyfinding.LearnedKeyConfig(first_chord_bonus=0.4, section_prior=1.0,
+                                      min_section_chords=8, change_margin=0.8)
 
 _SECTION = re.compile(r"^<([a-z_]+?)(?:_(\d+))?>$")
 # Sharps are spelled "s" (Fs = F#), which collides with "sus": a lookahead
@@ -101,6 +110,8 @@ class CSong:
     decade: int | None
     main_genre: str
     genres: list[str] = field(default_factory=list)
+    section_keys: list[tuple[str, str]] = field(default_factory=list)  # (tonic, mode) per section
+    key_changes: int = 0
 
 
 def parse_symbol(sym: str) -> tuple[int, str, tuple[int, ...]] | None:
@@ -113,20 +124,6 @@ def parse_symbol(sym: str) -> tuple[int, str, tuple[int, ...]] | None:
         # unknown suffix: fall back on whether it reads as minor
         q = ("min", (0, 3, 7)) if suffix.startswith(("m", "min")) and not suffix.startswith("maj") else ("other", (0, 7))
     return pitch_class(root), q[0], q[1]
-
-
-def estimate_key(pcs_weighted: np.ndarray) -> tuple[str, str]:
-    best, best_r = None, -2.0
-    for shift in range(12):
-        hist = np.roll(pcs_weighted, -shift)
-        for mode, prof in (("major", _MAJOR), ("minor", _MINOR)):
-            if hist.std() == 0:
-                r = 0.0
-            else:
-                r = np.corrcoef(hist, prof)[0, 1]
-            if r > best_r:
-                best, best_r = (RELATIVE_NAMES[shift], mode), r
-    return best
 
 
 def parse_row(row: dict) -> CSong | None:
@@ -149,17 +146,17 @@ def parse_row(row: dict) -> CSong | None:
     if not sections:
         return None
 
-    hist = np.zeros(12)
-    for _, chords in sections:
-        for root, _q, tones in chords:
-            for iv in tones:
-                hist[(root + iv) % 12] += 1.0
-    tonic, mode = estimate_key(hist)
+    (song_tonic, mode), keys = keyfinding.estimate_song_and_sections_learned(
+        [[(root, q, 1.0) for root, q, _ in chords] for _, chords in sections], _PROFILE, KEY_CFG,
+        mode_log_prior=_MODE_LOG_PRIOR)
+    tonic = RELATIVE_NAMES[song_tonic]
 
-    out = []
-    for lab, chords in sections:
-        out.append((lab, [Chord(Fraction(0), Fraction(1), relative_root(RELATIVE_NAMES[root], tonic), q)
+    out, section_keys = [], []
+    for (lab, chords), (sec_tonic, sec_mode) in zip(sections, keys):
+        out.append((lab, [Chord(Fraction(0), Fraction(1), RELATIVE_NAMES[(root - sec_tonic) % 12], q)
                           for root, q, _ in chords]))
+        section_keys.append((RELATIVE_NAMES[sec_tonic], sec_mode))
+    key_changes = sum(1 for a, b in zip(section_keys, section_keys[1:]) if a[0] != b[0])
 
     year = None
     if row.get("release_date"):
@@ -169,7 +166,8 @@ def parse_row(row: dict) -> CSong | None:
             year = None
     decade = int(float(row["decade"])) if row.get("decade") else None
     genres = re.findall(r"'([^']+)'", row.get("genres", "") or "")
-    return CSong(int(row["id"]), tonic, mode, out, year, decade, row.get("main_genre", "") or "", genres)
+    return CSong(int(row["id"]), tonic, mode, out, year, decade, row.get("main_genre", "") or "", genres,
+                 section_keys, key_changes)
 
 
 def load_corpus(csv_path: Path, limit: int | None = None, seed: int = 0,

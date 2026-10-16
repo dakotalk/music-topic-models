@@ -110,6 +110,26 @@ def test_chordonomicon_row_key_estimate():
     assert [lab for lab, _ in s.sections] == ["verse", "chorus"]
     assert [c.root for c in s.sections[0][1][:4]] == ["C", "G", "A", "F"]
     assert s.release_year == 1999 and s.genres == ["pop", "rock"]
+    assert s.section_keys == [("G", "major"), ("G", "major")] and s.key_changes == 0
+
+
+def test_chordonomicon_modulating_section():
+    # verse in G, chorus a semitone up in Ab (no shared chords, major chord on the tonic)
+    verse, chorus = "G D Emin C " * 6, "Ab Eb Fmin Db Ab " * 6
+    row = {"id": "2", "chords": f"<verse_1> {verse}<chorus_1> {chorus}".strip(),
+           "release_date": "", "decade": "", "genres": "", "main_genre": ""}
+    s = parse_row(row)
+    assert s.section_keys == [("G", "major"), ("Ab", "major")] and s.key_changes == 1
+    # both sections read as I V vi IV relative to their own key
+    assert [c.root for c in s.sections[1][1][:4]] == ["C", "G", "A", "F"]
+
+
+def test_learned_key_prefers_minor_tonic_for_aeolian_loop():
+    row = {"id": "3", "chords": "<verse_1> Amin F C G Amin F C G Amin F C G Amin",
+           "release_date": "", "decade": "", "genres": "", "main_genre": ""}
+    s = parse_row(row)
+    assert (s.tonic, s.mode) == ("A", "minor")
+    assert [c.token(with_rhythm=False) for c in s.sections[0][1][:4]] == ["C:min", "Ab:maj", "Eb:maj", "Bb:maj"]
 
 
 if __name__ == "__main__":

@@ -121,9 +121,9 @@ classifier does no better than the majority baseline).
 ## Results on Chordonomicon (40,000 songs)
 
 Chordonomicon has no durations or metre, so each chord is one unit token and
-the vocabulary is just 49 relative chords; keys are estimated with
-Krumhansl–Schmuckler profiles before transposition, which is noisier than
-Billboard's annotated tonics. 32,000 training songs, 8,000 held out, K = 8
+the vocabulary is just a few dozen relative chords. It also has no key, so
+roots are made relative to a key estimated per section (next subsection).
+32,000 training songs, 8,000 held out, K = 8
 chosen by the same reproducibility rule (0.75 of topics reproduce; held-out
 NPMI 0.21, positive now that there are enough songs for pairs to co-occur).
 
@@ -169,6 +169,39 @@ genre lifts above are real but small per-song effects; the 2015 project's
 section classifier was living on Billboard's rhythmic bargrams, not on which
 chords were used.
 
+### Key estimation, validated on Billboard
+
+Chordonomicon gives chord symbols but no key, so "relative root" needs a key
+finder. Billboard's annotated tonics (including the 82 songs that change key
+mid-song) make it possible to measure one instead of trusting it.
+`scripts/validate_keyfinding.py` and `scripts/validate_learned_keyfinding.py`
+report tonic accuracy at song level and at section level (5-fold
+cross-validated where anything is learned):
+
+| Key finder | Song tonic | Section tonic | Sections of modulating songs | Real key changes detected | Spurious key change |
+|---|---|---|---|---|---|
+| Krumhansl–Schmuckler on chord tones, whole song | 75.2% | 78.0% | 46% | — | — |
+| same, per section with song prior | 75.1% | 77.0% | 68% | — | — |
+| learned chord-root profile, whole song | 78.3% | 80.7% | 44% | 0% | 0% |
+| learned major + minor profiles, first-chord bonus, per section with prior and change margin (**used**) | **79.6%** | **84.0%** | **72%** | **95%** | 22% |
+
+The learned finder is a multinomial likelihood over a 12 × 2 table of
+(root relative to tonic, major- vs minor-type chord), one table for major-key
+songs and one for minor-key songs, learned from Billboard
+(`chordtopics/data/billboard_key_profile.npy`). The tables are themselves a
+small result: the major one is I 36%, IV 17%, V 16%, then ii and vi as minor
+chords; the minor one is i 38%, ♭VII 9%, ♭VI 9%, iv/IV, v/V, ♭III — the
+Aeolian system. Three refinements each earned their place in the table above:
+a bonus for the key whose tonic is the song's first chord (the first chord
+*is* the tonic 68% of the time), per-section estimation with the song
+histogram as a prior, and a margin a section key must beat the song key by,
+which cut spurious key changes from 42% of non-modulating songs to 22%.
+
+Krumhansl's biggest error class on this corpus is picking the dominant as
+tonic (80 of 221 errors), followed by relative major/minor confusion (47),
+which is what the separate minor profile fixes: Billboard annotators mark a
+dominant minor chord as the tonic 72% of the time, not as vi.
+
 ## Running it
 
 ```bash
@@ -179,6 +212,9 @@ python tests/test_parsing.py
 python scripts/run_billboard.py --data data/McGill-Billboard --index data/billboard-2.0-index.csv --out results/billboard
 python scripts/run_billboard.py ... --collocations 1 --out results/billboard_collocations
 python scripts/experiment_tokenization.py --data ... --index ... --out results/billboard/tokenizer_grid.csv
+
+python scripts/validate_keyfinding.py --data data/McGill-Billboard --out results/billboard/keyfinding.csv
+python scripts/validate_learned_keyfinding.py --data data/McGill-Billboard --out results/billboard/keyfinding_learned.csv
 
 # Chordonomicon: chordonomicon_v2.csv from https://huggingface.co/datasets/ailsntua/Chordonomicon
 python scripts/run_chordonomicon.py --csv data/chordonomicon_v2.csv --out results/chordonomicon --n 40000
@@ -195,11 +231,14 @@ chordtopics/
   chords.py         pitch classes, relative roots, chord-quality buckets
   billboard.py      SALAMI annotation parser: metre, x-repeats, dot continuations,
                     per-bar metre overrides, mid-song key changes, section labels
-  chordonomicon.py  CSV loader, chord-symbol parser, Krumhansl key estimate
+  chordonomicon.py  CSV loader, chord-symbol parser, per-section key estimation
+  keyfinding.py     Krumhansl/Temperley profiles and the learned chord-root key finder
+  data/             key profiles learned from Billboard
   tokenize.py       bargram tokens, repeat collapsing, collocations, thresholds
   model.py          LDA, held-out NPMI, Hungarian topic matching, seed stability
   evaluate.py       GroupKFold section classifier, year regression, baselines, bootstrap CIs
-scripts/            run_billboard.py, run_chordonomicon.py, experiment_tokenization.py
+scripts/            run_billboard.py, run_chordonomicon.py, experiment_tokenization.py,
+                    validate_keyfinding.py, validate_learned_keyfinding.py
 tests/              parser and tokenizer tests
 results/            outputs of the runs above (models are not committed)
 legacy/             the 2015 notebooks and slides
