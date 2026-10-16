@@ -128,33 +128,41 @@ baseline and its year MAE 6.4 vs 6.1).
 Chordonomicon has no durations or metre, so each chord is one unit token and
 the vocabulary is just a few dozen relative chords. It also has no key, so
 roots are made relative to a key estimated per section (next subsection).
-32,000 training songs, 8,000 held out, K = 8
-chosen by the same reproducibility rule (0.75 of topics reproduce; held-out
-NPMI 0.21, positive now that there are enough songs for pairs to co-occur).
+32,000 training songs, 8,000 held out, 30% of songs read as minor-key.
+K = 8 by the same reproducibility rule (0.38 of topics are real and
+reproduce, against ≤ 0.17 for every larger K); held-out NPMI 0.18, positive
+now that there are enough songs for pairs to co-occur.
 
 | Topic | Share | Top chords | Reading | Over-used by |
 |---|---|---|---|---|
-| 3 | 0.43 | IV (.34) I (.34) V (.32) | plain diatonic major | country ×1.3, punk ×1.1 |
-| 0 | 0.24 | i (.25) ♭VI (.22) ♭III (.15) iv (.14) ♭VII (.13) | flat-side / Aeolian | rap ×1.8, metal ×1.8, reggae ×1.3; minor-key songs ×3.3 |
-| 7 | 0.15 | I (.42) ii (.21) IV (.19) ♭VII (.12) v (.05) | Mixolydian / Dorian major | reggae ×1.2, rock ×1.1 |
-| 1 | 0.08 | vi (.82) iii (.18) | relative-minor vamps (partly a key-estimation artefact) | pop ×1.2, alternative ×1.1 |
-| 2 | 0.05 | V7 (.34) I7 (.17) IVmaj7… IV7 (.08) II7 (.07) | dominant sevenths / blues | jazz ×3.3, soul ×2.3 |
-| 5 | 0.02 | II (.46) VI (.24) III (.21) | major chords on sharp-side degrees | punk ×2.1, metal ×1.8 |
-| 6 | 0.02 | ii7 (.40) vi7 (.39) v7 (.12) | minor sevenths | soul ×3.8, jazz ×2.4 |
-| 4 | 0.01 | IVmaj7, Imaj7 … | major sevenths | soul ×4.2, jazz ×1.7 |
+| 7 | 0.47 | I (.38) IV (.31) V (.24) ii (.07) | plain diatonic major | country ×1.3 |
+| 5 | 0.24 | i (.31) ♭VI (.20) ♭VII (.20) ♭III (.16) iv (.08) v (.06) | the Aeolian / flat-side minor system | metal ×2.1, rap ×2.0, reggae ×1.6; minor-key songs ×3.0 |
+| 1 | 0.09 | V (.33) iii (.20) I (.19) II (.14) VI (.08) VII (.03) | sharp-side major chords | punk ×1.6, alternative ×1.2, metal ×1.2 |
+| 2 | 0.06 | vi (.96) III7 (.03) | vi vamps: minor-key songs the key finder still reads in the relative major | alternative, pop ×1.1 |
+| 4 | 0.04 | ♭VII (.42) i7 (.19) ♭VImaj7 (.08) iv7 (.08) v7 (.08) | minor-key seventh chords (minor soul / R&B) | soul ×3.5, jazz ×1.9, rap ×1.5 |
+| 0 | 0.04 | V7 (.51) I7 (.20) I (.13) II7 (.09) VI7 (.05) | dominant sevenths / blues | jazz ×3.2, country ×1.5, soul ×1.5 |
+| 6 | 0.03 | IV (.49) III (.18) iv (.11) ♭II (.09) v (.09) | borrowed and chromatic chords | metal, soul ×1.4, jazz, rap ×1.3 |
+| 3 | 0.03 | ii7 (.24) vi7 (.19) Imaj7 (.16) IVmaj7 (.15) IV7 (.14) | seventh-chord soul / jazz-pop | soul ×3.2, jazz ×2.5 |
 
-The same four systems come out as on Billboard — diatonic major, flat-side
-minor, blues sevenths, seventh-chord soul/jazz — and the same two trends hold
-over a longer span (828–16,215 songs per decade):
+The same systems come out as on Billboard — diatonic major, flat-side minor,
+blues sevenths, seventh-chord soul/jazz — and with the learned key finder the
+minor topic is now the textbook Aeolian set (i, ♭VI, ♭VII, ♭III, iv, v) rather
+than a mixture. A residual "vi vamp" topic (6%, down from 8% with the
+Krumhansl estimate) still marks minor-key songs that the finder reads in the
+relative major; the key finder's 80% song-level accuracy on Billboard is the
+limit here.
+
+The two historical trends hold over a longer span than Billboard covers
+(828–16,213 songs per decade):
 
 ![topic share by decade](results/chordonomicon/topic_share_by_decade.png)
 
 | Topic | 1960s | 1970s | 1980s | 1990s | 2000s | 2010s | 2020s |
 |---|---|---|---|---|---|---|---|
-| 3 diatonic major | 0.46 | 0.43 | 0.40 | 0.44 | 0.43 | 0.43 | 0.42 |
-| 0 flat-side minor | **0.14** | 0.18 | 0.23 | 0.21 | 0.24 | 0.26 | **0.24** |
-| 2 blues sevenths | **0.14** | 0.09 | 0.07 | 0.07 | 0.05 | 0.04 | **0.04** |
-| 1 vi / iii vamps | 0.04 | 0.05 | 0.06 | 0.06 | 0.08 | 0.10 | 0.10 |
+| 7 diatonic major | 0.51 | 0.51 | 0.47 | 0.50 | 0.48 | 0.47 | 0.45 |
+| 5 Aeolian minor | **0.12** | 0.15 | 0.23 | 0.19 | 0.23 | 0.26 | **0.26** |
+| 0 blues sevenths | **0.13** | 0.08 | 0.05 | 0.06 | 0.04 | 0.03 | **0.03** |
+| 2 vi vamps | 0.04 | 0.04 | 0.04 | 0.05 | 0.06 | 0.07 | 0.07 |
 
 ![genre lift](results/chordonomicon/genre_topic_lift.png)
 
@@ -163,10 +171,10 @@ Downstream, chord shares without rhythm carry almost no signal (mean ± sd over
 
 | Task | Score | Baseline |
 |---|---|---|
-| Section type (verse / chorus / bridge), 20,000 sections, GroupKFold by song | accuracy 0.40 ± 0.00 | majority 0.47 |
-| Verse vs chorus | 0.52 ± 0.00 | majority 0.51 |
-| Release year, 40,000 songs | MAE 10.3 ± 0.1 years | predict the mean 10.5 |
-| Main genre, 8 classes | accuracy 0.19, balanced 0.21 | majority 0.26, chance 0.125 |
+| Section type (verse / chorus / bridge), 20,000 sections, GroupKFold by song | accuracy 0.40 ± 0.01 | majority 0.47 |
+| Verse vs chorus | 0.52 ± 0.00 | majority 0.52 |
+| Release year, 40,000 songs | MAE 10.2 ± 0.1 years | predict the mean 10.5 |
+| Main genre, 8 classes | accuracy 0.21, balanced 0.23 | majority 0.26, chance 0.125 |
 
 (The classifiers use `class_weight="balanced"`, which is why accuracy can sit
 below the majority baseline while balanced accuracy sits above chance.) The

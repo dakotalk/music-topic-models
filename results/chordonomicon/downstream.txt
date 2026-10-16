@@ -1,0 +1,50 @@
+== Across 3 seeds at K=8 (mean ± sd over LDA seeds) ==
+section (3-class) acc 0.405 ± 0.011   majority 0.467 ± 0.000
+verse-vs-chorus acc   0.520 ± 0.001   majority 0.515 ± 0.000
+year MAE              10.202 ± 0.080   predict-mean 10.543 ± 0.000
+genre acc             0.207 ± 0.008   majority 0.256 ± 0.000   balanced 0.231 ± 0.006
+
+== Section type (20000 sections, GroupKFold by song, seed 2) ==
+n=20000  classes=['verse', 'chorus', 'bridge']
+accuracy          0.404 ± 0.005
+balanced accuracy 0.394
+majority baseline 0.467
+stratified-random baseline 0.424
+confusion (rows=true, cols=pred):
+        verse chorus bridge
+ verse   3667   3548   2135
+chorus   3178   3734   1895
+bridge    574    597    672
+
+== Verse vs chorus ==
+n=18157  classes=['verse', 'chorus']
+accuracy          0.519 ± 0.008
+balanced accuracy 0.520
+majority baseline 0.515
+stratified-random baseline 0.503
+confusion (rows=true, cols=pred):
+        verse chorus
+ verse   4712   4638
+chorus   4092   4715
+
+== Release year (random forest, 5-fold) ==
+n=39993
+MAE (years)        10.12 ± 0.08
+predict-mean MAE   10.54
+
+== Main genre, top 8 genres ==
+n=27069  classes=['pop', 'rock', 'country', 'alternative', 'pop rock', 'punk', 'metal', 'rap']
+accuracy          0.205 ± 0.004
+balanced accuracy 0.227
+majority baseline 0.256
+stratified-random baseline 0.168
+confusion (rows=true, cols=pred):
+               pop   rock countr altern pop ro   punk  metal    rap
+        pop   1188    833   1047    862    850    603    658    879
+       rock    656    952    882    609    715    659    587    495
+    country    490    470   1481    447    434    416    208    347
+alternative    566    482    607    601    507    438    351    438
+   pop rock    491    465    436    351    475    326    312    288
+       punk    134    179    198    143    142    309    156    107
+      metal     90    105     47     70    103    106    284     96
+        rap    140     77     80     90     74     78    105    254
