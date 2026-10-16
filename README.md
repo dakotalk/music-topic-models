@@ -225,9 +225,11 @@ python scripts/validate_learned_keyfinding.py --data data/McGill-Billboard --out
 python scripts/run_chordonomicon.py --csv data/chordonomicon_v2.csv --out results/chordonomicon --n 40000
 ```
 
-Runs are deterministic (fixed seeds for the song split, LDA, classifiers and
-bootstraps). The Billboard run takes about five minutes on one core; the
-Chordonomicon run about thirty.
+Runs are deterministic for a given machine (fixed seeds for the song split,
+LDA, classifiers and bootstraps; the random forests use all cores, and
+scikit-learn's per-tree seeding depends on the core count, so classifier
+scores can move in the third decimal between machines). The Billboard run
+takes about five minutes on four cores; the Chordonomicon run about forty.
 
 ### Layout
 
