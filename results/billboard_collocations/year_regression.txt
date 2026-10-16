@@ -1,7 +1,7 @@
 Chart year from song topic proportions, 5-fold CV, random forest.
-Across 5 seeds: MAE 6.245 ± 0.067 years, predict-mean baseline 7.593 ± 0.000
+Across 5 seeds: MAE 6.415 ± 0.137 years, predict-mean baseline 7.593 ± 0.000
 
 == seed 0 ==
 n=875
-MAE (years)        6.23 ± 0.31
+MAE (years)        6.31 ± 0.29
 predict-mean MAE   7.59

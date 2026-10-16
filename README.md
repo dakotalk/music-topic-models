@@ -91,11 +91,15 @@ PMI — rewards the regularisation rather than the topics.
 Neither held-out NPMI nor held-out likelihood can choose K here: both keep
 rising past K = 20 while the topics degenerate into two or three tokens each
 (at K = 32, vocabulary 74, the leading topic is 0.60 IV + 0.29 I + 0.11 V and
-nothing else). K is chosen instead by **reproducibility**: train five seeds,
-Hungarian-match topics between every pair of runs by cosine similarity, and
-count the topics that find a match ≥ 0.7 in *every* other seed. That fraction
-peaks at K = 6 (0.50). Seed stability is 0.70 mean matched cosine — far from
-perfect, which is why the downstream numbers are averaged over seeds.
+nothing else). K is chosen instead by **reproducibility of real topics**:
+train five seeds, Hungarian-match topics between every pair of runs by cosine
+similarity, and count the topics that carry at least 0.25/K of the corpus,
+spread over an effective vocabulary of at least three tokens (so a one- or
+two-chord topic doesn't count as a "style"), and find a match ≥ 0.7 in *every*
+other seed. That fraction is 0.50 at K = 6 and falls to 0.09 at K = 32, where
+only 28% of topics pass the first two tests at all; ties go to the smaller K.
+Seed stability is 0.70 mean matched cosine — far from perfect, which is why
+the downstream numbers are averaged over seeds.
 
 ### Collocations hurt
 
@@ -115,8 +119,9 @@ Every round of collocation detection lowers coherence and stability, and the
 are near-unique to a handful of songs, so topics built from them never
 reproduce on new songs. The full grid (rhythm on/off, rounds, floor, alpha) is
 in `results/billboard/tokenizer_grid.csv`; a full run with one collocation
-round is in `results/billboard_collocations/` for comparison (its section
-classifier does no better than the majority baseline).
+round is in `results/billboard_collocations/` for comparison (K = 12, held-out
+NPMI −0.35 vs −0.17; its section classifier is 0.46 against a 0.44 majority
+baseline and its year MAE 6.4 vs 6.1).
 
 ## Results on Chordonomicon (40,000 songs)
 

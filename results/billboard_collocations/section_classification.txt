@@ -1,44 +1,44 @@
 5746 labelled sections, 4765 non-empty after thresholding (981 dropped)
 Features: topic proportions of the section. CV: GroupKFold by song.
 
-== Across 5 seeds at K=24 (mean ± sd over LDA seeds) ==
-4-class accuracy      0.459 ± 0.015   majority 0.444 ± 0.000
-4-class balanced acc  0.456 ± 0.018
-verse-vs-chorus acc   0.609 ± 0.014   majority 0.517 ± 0.000
+== Across 5 seeds at K=12 (mean ± sd over LDA seeds) ==
+4-class accuracy      0.459 ± 0.006   majority 0.444 ± 0.000
+4-class balanced acc  0.443 ± 0.010
+verse-vs-chorus acc   0.621 ± 0.006   majority 0.517 ± 0.000
 
 == Random forest, 4 classes (seed 0) ==
 n=4765  classes=['verse', 'chorus', 'bridge', 'prechorus']
-accuracy          0.449 ± 0.025
-balanced accuracy 0.447
+accuracy          0.466 ± 0.012
+balanced accuracy 0.453
 majority baseline 0.444
 stratified-random baseline 0.386
 confusion (rows=true, cols=pred):
            verse chorus bridge precho
-    verse   1049    530    313    223
-   chorus    588    795    318    274
-   bridge     77     78    168     75
-prechorus     32     64     52    129
+    verse   1086    559    319    151
+   chorus    629    837    313    196
+   bridge     91     76    183     48
+prechorus     50     65     47    115
 
 == Logistic regression, 4 classes (seed 0) ==
 n=4765  classes=['verse', 'chorus', 'bridge', 'prechorus']
-accuracy          0.298 ± 0.003
-balanced accuracy 0.351
+accuracy          0.290 ± 0.021
+balanced accuracy 0.338
 majority baseline 0.444
 stratified-random baseline 0.386
 confusion (rows=true, cols=pred):
            verse chorus bridge precho
-    verse    672    434    417    592
-   chorus    485    471    500    519
-   bridge     61     57    137    143
-prechorus     30     37     70    140
+    verse    634    477    468    536
+   chorus    585    484    449    457
+   bridge     90     64    130    114
+prechorus     66     41     37    133
 
 == Random forest, verse vs chorus (seed 0) ==
 n=4090  classes=['verse', 'chorus']
-accuracy          0.615 ± 0.003
-balanced accuracy 0.615
+accuracy          0.618 ± 0.023
+balanced accuracy 0.617
 majority baseline 0.517
 stratified-random baseline 0.506
 confusion (rows=true, cols=pred):
         verse chorus
- verse   1326    789
-chorus    785   1190
+ verse   1353    762
+chorus    800   1175

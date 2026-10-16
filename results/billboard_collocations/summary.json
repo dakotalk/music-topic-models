@@ -157,27 +157,27 @@
       128
     ]
   ],
-  "chosen_k": 24,
+  "chosen_k": 12,
   "chosen_seed": 0,
   "downstream_mean_over_seeds": {
-    "npmi": -0.2975,
-    "section4_acc": 0.459,
-    "section4_bal_acc": 0.4555,
+    "npmi": -0.3461,
+    "section4_acc": 0.4594,
+    "section4_bal_acc": 0.4429,
     "section4_majority": 0.4439,
-    "verse_chorus_acc": 0.6095,
+    "verse_chorus_acc": 0.6211,
     "verse_chorus_majority": 0.5171,
-    "year_mae": 6.2451,
+    "year_mae": 6.4154,
     "year_baseline_mae": 7.5934
   },
   "downstream_sd_over_seeds": {
-    "npmi": 0.0272,
-    "section4_acc": 0.0146,
-    "section4_bal_acc": 0.0176,
+    "npmi": 0.0263,
+    "section4_acc": 0.0059,
+    "section4_bal_acc": 0.0096,
     "section4_majority": 0.0,
-    "verse_chorus_acc": 0.0135,
+    "verse_chorus_acc": 0.0062,
     "verse_chorus_majority": 0.0,
-    "year_mae": 0.0672,
+    "year_mae": 0.1373,
     "year_baseline_mae": 0.0
   },
-  "heldout_npmi_best": -0.2599587581770602
+  "heldout_npmi_best": -0.31889993345037554
 }

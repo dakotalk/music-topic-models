@@ -3,21 +3,21 @@ Features: topic proportions of the section. CV: GroupKFold by song.
 
 == Across 5 seeds at K=6 (mean ± sd over LDA seeds) ==
 4-class accuracy      0.474 ± 0.026   majority 0.433 ± 0.000
-4-class balanced acc  0.467 ± 0.011
-verse-vs-chorus acc   0.610 ± 0.015   majority 0.493 ± 0.000
+4-class balanced acc  0.469 ± 0.013
+verse-vs-chorus acc   0.609 ± 0.014   majority 0.493 ± 0.000
 
 == Random forest, 4 classes (seed 0) ==
 n=5551  classes=['verse', 'chorus', 'bridge', 'prechorus']
-accuracy          0.495 ± 0.014
-balanced accuracy 0.479
+accuracy          0.482 ± 0.016
+balanced accuracy 0.465
 majority baseline 0.433
 stratified-random baseline 0.379
 confusion (rows=true, cols=pred):
            verse chorus bridge precho
-    verse   1292    661    271    181
-   chorus    717   1104    296    252
-   bridge     98     93    186     53
-prechorus     51     76     53    167
+    verse   1270    676    282    177
+   chorus    753   1065    298    253
+   bridge     97     97    184     52
+prechorus     54     76     59    158
 
 == Logistic regression, 4 classes (seed 0) ==
 n=5551  classes=['verse', 'chorus', 'bridge', 'prechorus']
@@ -27,18 +27,18 @@ majority baseline 0.433
 stratified-random baseline 0.379
 confusion (rows=true, cols=pred):
            verse chorus bridge precho
-    verse   1137     95    346    827
-   chorus    977    107    385    900
-   bridge    173     13     79    165
+    verse   1127    104    346    828
+   chorus    967    120    382    900
+   bridge    171     15     79    165
 prechorus    101      9     41    196
 
 == Random forest, verse vs chorus (seed 0) ==
 n=4774  classes=['verse', 'chorus']
-accuracy          0.620 ± 0.029
-balanced accuracy 0.620
+accuracy          0.614 ± 0.033
+balanced accuracy 0.614
 majority baseline 0.493
 stratified-random baseline 0.494
 confusion (rows=true, cols=pred):
         verse chorus
- verse   1495    910
-chorus    903   1466
+ verse   1498    907
+chorus    934   1435

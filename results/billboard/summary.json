@@ -161,22 +161,22 @@
   "chosen_seed": 0,
   "downstream_mean_over_seeds": {
     "npmi": -0.1664,
-    "section4_acc": 0.4741,
-    "section4_bal_acc": 0.4674,
+    "section4_acc": 0.4743,
+    "section4_bal_acc": 0.4688,
     "section4_majority": 0.4333,
-    "verse_chorus_acc": 0.6101,
+    "verse_chorus_acc": 0.6089,
     "verse_chorus_majority": 0.4931,
-    "year_mae": 6.1029,
+    "year_mae": 6.0943,
     "year_baseline_mae": 7.5883
   },
   "downstream_sd_over_seeds": {
     "npmi": 0.0396,
-    "section4_acc": 0.0256,
-    "section4_bal_acc": 0.0106,
+    "section4_acc": 0.0262,
+    "section4_bal_acc": 0.0134,
     "section4_majority": 0.0,
-    "verse_chorus_acc": 0.0145,
+    "verse_chorus_acc": 0.0139,
     "verse_chorus_majority": 0.0,
-    "year_mae": 0.0949,
+    "year_mae": 0.0984,
     "year_baseline_mae": 0.0
   },
   "heldout_npmi_best": -0.10317388808101552
