@@ -158,7 +158,7 @@ def main():
             else:
                 y_t, g_t = y, groups
                 sets = {"harmony only": Xh, "position only": Xp, "harmony + position": Xb}
-                if len(y_t) == 0:
+            if len(y_t) == 0:
                 continue
             f.write(f"== {task} (n={len(y_t)}, GroupKFold by song, gradient boosting, balanced class weights) ==\n")
             for name, X in sets.items():
