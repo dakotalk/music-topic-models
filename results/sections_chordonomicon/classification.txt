@@ -1,0 +1,54 @@
+== 6 labels (n=39482, GroupKFold by song, gradient boosting, balanced class weights) ==
+        harmony only: accuracy 0.429 ± 0.003   balanced 0.426   (majority 0.380, balanced chance 0.200)
+       position only: accuracy 0.521 ± 0.005   balanced 0.684   (majority 0.380, balanced chance 0.200)
+  harmony + position: accuracy 0.606 ± 0.005   balanced 0.714   (majority 0.380, balanced chance 0.200)
+
+confusion, harmony only (rows=true, cols=pred):
+       intro verse choru bridg outro
+ intro  2727   584   317   343   459
+ verse  1623  6158  4502  1365  1357
+chorus  1163  4161  6070  1588  1367
+bridge   428   404   607  1206   375
+ outro   622   413   494   388   761
+
+== beginning / middle / end (n=39482, GroupKFold by song, gradient boosting, balanced class weights) ==
+        harmony only: accuracy 0.678 ± 0.009   balanced 0.584   (majority 0.820, balanced chance 0.333)
+       position only: accuracy 0.862 ± 0.004   balanced 0.930   (majority 0.820, balanced chance 0.333)
+  harmony + position: accuracy 0.891 ± 0.005   balanced 0.926   (majority 0.820, balanced chance 0.333)
+
+confusion, harmony only (rows=true, cols=pred):
+          begin middl   end
+beginning  2932   868   630
+   middle  4370 22813  5191
+      end   702   940  1036
+
+== intro vs outro (n=7108, GroupKFold by song, gradient boosting, balanced class weights) ==
+        harmony only: accuracy 0.724 ± 0.008   balanced 0.712   (majority 0.623, balanced chance 0.500)
+       position only: accuracy 0.995 ± 0.002   balanced 0.995   (majority 0.623, balanced chance 0.500)
+  harmony + position: accuracy 0.995 ± 0.002   balanced 0.995   (majority 0.623, balanced chance 0.500)
+
+confusion, harmony only (rows=true, cols=pred):
+      intro outro
+intro  3368  1062
+outro   903  1775
+
+== verse vs chorus (n=29354, GroupKFold by song, gradient boosting, balanced class weights) ==
+        harmony only: accuracy 0.579 ± 0.004   balanced 0.580   (majority 0.511, balanced chance 0.500)
+       position only: accuracy 0.674 ± 0.005   balanced 0.674   (majority 0.511, balanced chance 0.500)
+  harmony + position: accuracy 0.691 ± 0.004   balanced 0.691   (majority 0.511, balanced chance 0.500)
+
+confusion, harmony only (rows=true, cols=pred):
+       verse choru
+ verse  8485  6520
+chorus  5829  8520
+
+== bridge vs chorus (n=17369, GroupKFold by song, gradient boosting, balanced class weights) ==
+        harmony only: accuracy 0.763 ± 0.008   balanced 0.703   (majority 0.826, balanced chance 0.500)
+       position only: accuracy 0.696 ± 0.010   balanced 0.702   (majority 0.826, balanced chance 0.500)
+  harmony + position: accuracy 0.793 ± 0.013   balanced 0.764   (majority 0.826, balanced chance 0.500)
+
+confusion, harmony only (rows=true, cols=pred):
+       bridg choru
+bridge  1844  1176
+chorus  2949 11400
+

@@ -269,9 +269,35 @@ section *changes key* barely matters (3% of sections do), and neither does
 the sharp-side/flat-side vocabulary that defines the topics above — style and
 function are carried by different properties of the same chords.
 
-### Chordonomicon replication
+### Chordonomicon replication: 39,482 sections, 6,294 songs
 
-<!-- SECTIONS_CHORDONOMICON -->
+Rhythm-free (each chord is one unit), with estimated rather than annotated
+keys and crowd-sourced section tags; no prechorus tag. The pattern holds
+([`results/sections_chordonomicon/`](results/sections_chordonomicon/)):
+
+| cue | intro | verse | chorus | bridge | outro |
+|---|---|---|---|---|---|
+| starts on I | **0.81** | 0.57 | 0.48 | **0.34** | 0.47 |
+| ends on I | 0.36 | 0.35 | 0.37 | 0.23 | **0.49** |
+| ends on V | 0.22 | 0.26 | 0.23 | **0.31** | **0.15** |
+| distinct chords | 3.3 | 4.2 | 4.2 | 4.1 | 3.6 |
+| novelty vs rest (JSD) | 0.22 | 0.12 | 0.12 | **0.23** | 0.19 |
+| chords unique to section | 0.04 | 0.02 | 0.02 | **0.09** | 0.04 |
+| max overlap with another section | 0.78 | 0.95 | 0.95 | 0.80 | 0.84 |
+
+Outros again end on I most often and on V least; bridges are again the most
+novel and the only type that routinely introduces its own chords; verses and
+choruses are again the shared material. The bar-by-bar profiles repeat too:
+the outro's last chord climbs back to the tonic (18% in the interior → 35% in
+the last position) and the bridge's last chord is V (26%, from 14%). One
+caveat on the intro row: the key finder gives a bonus to a song's first chord,
+and the intro's first chord *is* the song's first chord, so 0.81 is inflated
+here; Billboard's 0.74 uses annotated keys and is the number to trust.
+
+Classification is weaker without rhythm (5 types, balanced accuracy: harmony
+0.43, position 0.68, both 0.71; bridge vs chorus from harmony 0.70 balanced
+vs 0.50 chance), and the ordering of cues is the same: length, starting on I,
+overlap with other sections, novelty, ending on I.
 
 ### Key estimation, validated on Billboard
 
