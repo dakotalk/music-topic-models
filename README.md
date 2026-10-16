@@ -182,6 +182,97 @@ genre lifts above are real but small per-song effects; the 2015 project's
 section classifier was living on Billboard's rhythmic bargrams, not on which
 chords were used.
 
+## What makes a beginning sound like a beginning?
+
+The topic model asks *which harmonic dialect* a passage speaks. A different
+question is *where in the song it belongs*: what, in the harmony alone, makes
+an intro sound like an intro, a bridge like a bridge, an outro like an end?
+`scripts/run_sections.py` computes label-free harmonic features for every
+labelled section — size, harmonic rhythm, tonic emphasis, how it starts and
+ends, repetition, novelty against the rest of the song, how much of its
+material recurs elsewhere, key change — and keeps *position in the song* as a
+separate feature set, so the classifier comparison says what harmony adds
+beyond "it's the seventh section". (An earlier version compared each section
+to the song's labelled choruses; that leaks the label and was removed. Every
+"recurrence" feature now asks only how much of a section's material returns
+*anywhere* else in the song.)
+
+### Billboard: 6,958 labelled sections, 889 songs
+
+**Beginnings and ends sit on the tonic; the middles that lead somewhere avoid
+it.** Mean of each cue by section type (full table with CIs in
+[`results/sections/descriptives.md`](results/sections/descriptives.md)):
+
+| cue | intro | verse | prechorus | chorus | bridge | outro |
+|---|---|---|---|---|---|---|
+| starts on I | 0.74 | 0.81 | **0.27** | 0.61 | **0.18** | 0.73 |
+| ends on I | 0.45 | 0.41 | 0.16 | 0.36 | 0.19 | **0.60** |
+| ends on V | 0.29 | 0.31 | **0.45** | 0.30 | **0.48** | **0.13** |
+| share of I | 0.53 | 0.45 | 0.20 | 0.36 | 0.20 | 0.53 |
+| distinct chords | 2.8 | 4.2 | 4.2 | 4.2 | 4.6 | 3.0 |
+| length in bars | 7.1 | 12.9 | 6.9 | 10.5 | 10.2 | 14.9 |
+| is a loop | 0.62 | 0.55 | 0.34 | 0.53 | 0.33 | **0.77** |
+| novelty vs rest of song (JSD, bits) | 0.33 | 0.16 | 0.36 | 0.20 | **0.42** | 0.28 |
+| chords unique to this section | 0.07 | 0.01 | 0.01 | 0.01 | **0.16** | 0.05 |
+| max overlap with another section (Jaccard) | 0.66 | 0.94 | 0.96 | 0.94 | 0.63 | 0.70 |
+
+Intros and outros are short-vocabulary tonic loops (2.8–3.0 distinct chords,
+I more than half the time); the outro is the longest section type, loops
+most often (77%), and is the only one that ends on I more often than not (60%)
+and almost never on V (13%). Prechoruses and bridges are the mirror image:
+they start off the tonic (73% and 82% of the time), end on V nearly half the
+time, and are the most novel sections; bridges alone introduce chords heard
+nowhere else in the song (16% of their harmony). Verses and choruses are the
+song's shared material — 94% maximal overlap with another section — and
+differ mainly in that choruses start on I less often (61% vs 81%) and move
+faster (1.35 vs 1.28 chords per bar).
+
+**How sections begin and end, bar by bar.** Share of the main relative chords
+in the first bar, the interior and the last bar of each section type:
+
+![boundary profiles](results/sections/boundary_profiles.png)
+
+Every section type except prechorus and bridge opens with a tonic spike (I in
+53–55% of first bars for intros and verses) that decays into the interior. The
+last bar is where function shows: verses, prechoruses and bridges end on V
+(V plus V7 in 27%, 37% and 42% of last bars) — a half cadence that hands off
+to the next section — while the outro's last bar climbs back to the tonic
+(43%, from 29% in its interior). An end sounds like an end because the
+harmony returns home; a middle sounds like a middle because it leaves the door
+open.
+
+**Can harmony alone tell?** GroupKFold by song, gradient boosting with
+balanced class weights, against position-only and majority baselines
+([`results/sections/classification.txt`](results/sections/classification.txt)):
+
+| task | harmony only | position only | both | majority |
+|---|---|---|---|---|
+| 6 section types (balanced acc.) | 0.58 | 0.61 | **0.74** | 0.17 chance |
+| beginning / middle / end (balanced) | 0.69 | 0.94 | 0.92 | 0.33 chance |
+| intro vs outro | 0.80 | 1.00 (trivial) | 1.00 | 0.66 |
+| verse vs chorus | 0.70 | 0.63 | 0.76 | 0.49 |
+| bridge vs chorus | 0.91 | 0.62 | 0.92 | 0.85 |
+
+Harmony and position are complementary: each alone gets ~0.6 balanced
+accuracy on the six-way task and together they reach 0.74. Harmony beats
+position where position is uninformative (verse vs chorus, bridge vs chorus)
+and position wins where it is definitional (an intro is the first section).
+Intro vs outro — two tonic loops — is 80% separable from harmony alone,
+mostly by length, looping and whether the last bar lands on I.
+
+![importance](results/sections/importance.png)
+
+Permutation importance on held-out folds names the cues: section length
+first, then novelty against the rest of the song, starting on I, overlap with
+other sections, tonic share, loop period and harmonic rhythm. Whether the
+section *changes key* barely matters (3% of sections do), and neither does
+the sharp-side/flat-side vocabulary that defines the topics above — style and
+function are carried by different properties of the same chords.
+
+### Chordonomicon replication
+
+<!-- SECTIONS_CHORDONOMICON -->
+
 ### Key estimation, validated on Billboard
 
 Chordonomicon gives chord symbols but no key, so "relative root" needs a key
@@ -249,10 +340,11 @@ chordtopics/
   chordonomicon.py  CSV loader, chord-symbol parser, per-section key estimation
   keyfinding.py     Krumhansl/Temperley profiles and the learned chord-root key finder
   data/             key profiles learned from Billboard
+  sections.py       label-free harmonic features of song sections, position baseline
   tokenize.py       bargram tokens, repeat collapsing, collocations, thresholds
   model.py          LDA, held-out NPMI, Hungarian topic matching, seed stability
   evaluate.py       GroupKFold section classifier, year regression, baselines, bootstrap CIs
-scripts/            run_billboard.py, run_chordonomicon.py, experiment_tokenization.py,
+scripts/            run_billboard.py, run_chordonomicon.py, run_sections.py, experiment_tokenization.py,
                     validate_keyfinding.py, validate_learned_keyfinding.py
 tests/              parser and tokenizer tests
 results/            outputs of the runs above (models are not committed)
